@@ -1,54 +1,54 @@
-import request from '@/utils/request'
+import request from "@/utils/request";
 
 /**
  * 获取系统用户分页列表
- * @returns 
+ * @returns
  */
 export function GetSysUserList(params) {
   return request({
-    url: '/pc/sysUser/pageList',
-    method: 'get',
-    params
-  })
+    url: "/pc/sysUser/pageList",
+    method: "get",
+    params,
+  });
 }
 
 /**
  * 新增用户
- * @param {*} data 
- * @returns 
+ * @param {*} data
+ * @returns
  */
 export function AddSysUser(data) {
   return request({
-    url: '/pc/sysUser/addSysUser',
-    method: 'post',
-    data
-  })
+    url: "/pc/sysUser/addSysUser",
+    method: "post",
+    data,
+  });
 }
 
 /**
  * 修改用户
- * @param {*} data 
- * @returns 
+ * @param {*} data
+ * @returns
  */
 export function UpdateSysUser(data) {
   return request({
-    url: '/pc/sysUser/updateSysUser',
-    method: 'post',
-    data
-  })
+    url: "/pc/sysUser/updateSysUser",
+    method: "post",
+    data,
+  });
 }
 
 /**
  * 修改系统用户密码
- * @param {*} data 
- * @returns 
+ * @param {*} data
+ * @returns
  */
 export function UpdateSysUserPassword(data) {
   return request({
-    url: '/pc/sysUser/updateSysUserPassword',
-    method: 'post',
-    data
-  })
+    url: "/pc/sysUser/updateSysUserPassword",
+    method: "post",
+    data,
+  });
 }
 
 /**
@@ -56,8 +56,8 @@ export function UpdateSysUserPassword(data) {
  */
 export function DeleteById(params) {
   return request({
-    url: '/pc/sysUser/deleteById',
-    method: 'delete',
-    params
-  })
+    url: "/pc/sysUser/deleteById",
+    method: "delete",
+    params,
+  });
 }
