@@ -1,14 +1,37 @@
 <template>
   <div>
-    <el-upload :limit="limit" action accept="image/*" :on-change="uploadFile" list-type="picture-card"
-      :auto-upload="false" :file-list="fileList" :on-exceed="handleExceed" :on-preview="handlePictureCardPreview"
-      :before-remove="beforeRemove" :on-remove="handleRemove" ref="upload" class="avatar-uploader"
-      :class="{ hide: showUpload }" :on-success="onSuccess" :on-error="onError" :disabled="disabled" :drag="drag"
-      :multiple="multiple">
+    <el-upload
+      :limit="limit"
+      action
+      accept="image/*"
+      :on-change="uploadFile"
+      list-type="picture-card"
+      :auto-upload="false"
+      :file-list="fileList"
+      :on-exceed="handleExceed"
+      :on-preview="handlePictureCardPreview"
+      :before-remove="beforeRemove"
+      :on-remove="handleRemove"
+      ref="upload"
+      class="avatar-uploader"
+      :class="{ hide: showUpload }"
+      :on-success="onSuccess"
+      :on-error="onError"
+      :disabled="disabled"
+      :drag="drag"
+      :multiple="multiple"
+    >
       <i class="el-icon-plus"></i>
     </el-upload>
-    <el-button v-show="showClearBtn && values && values.length > 0" type="warning" plain size="small" @click="clearFiles"
-      class="clearBtn">清空上传列表</el-button>
+    <el-button
+      v-show="showClearBtn && values && values.length > 0"
+      type="warning"
+      plain
+      size="small"
+      @click="clearFiles"
+      class="clearBtn"
+      >清空上传列表</el-button
+    >
     <el-dialog width="30%" :visible.sync="dialogVisible">
       <img width="100%" :src="imgUrl.url" alt />
     </el-dialog>
@@ -28,8 +51,8 @@ export default {
     multiple: Boolean,
     showClearBtn: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
@@ -50,13 +73,11 @@ export default {
         else this.showUpload = false;
       },
       deep: true,
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   methods: {
-    beforeRemove(file, fileList) {
-
-    },
+    beforeRemove(file, fileList) {},
     //文件列表移除文件时的函数
     handleRemove(file, fileList) {
       this.values = fileList;
@@ -78,6 +99,7 @@ export default {
       if (fileList.length >= this.limit) this.showUpload = true;
       // const file = e.file; <- 这里是不需要直接上传而是通过按钮上传的
       const file = e.raw; // <- 这里是直接上传的
+      let uid = e.uid;
       //大小
       const size = file.size / 1024 / 1024;
       if (
@@ -101,23 +123,27 @@ export default {
       } else {
         this.loading = this.$loading({
           lock: true,
-          text: '上传中',
-          spinner: 'el-icon-loading'
+          text: "上传中",
+          spinner: "el-icon-loading",
         });
         if (this.limit == 1) this.imgUrl = []; //此处判断为一张的时候需要清空数组
         let params = new FormData();
         params.append("files", file);
-        UploadImg(params).then((res) => {
-          fileList[fileList.length - 1].realUrl = res.data[0];
-          this.values = fileList;
-          this.$emit("getUrl", res.data[0]);
+        UploadImg(params)
+          .then((res) => {
+            console.log(uid);
+            let imgObj = fileList.find((item) => item.uid === uid);
+            imgObj.realUrl = res.data[0];
+            this.values = fileList;
+            this.$emit("getUrl", res.data[0]);
 
-          this.$message.success("上传成功！");
-          this.loading.close();
-        }).catch((err) => {
-          this.loading.close();
-          this.$message.error("上传失败，请重试！");
-        });
+            this.$message.success("上传成功！");
+            this.loading.close();
+          })
+          .catch((err) => {
+            this.loading.close();
+            this.$message.error("上传失败，请重试！");
+          });
       }
     },
     //文件超出个数限制时的函数
@@ -131,23 +157,18 @@ export default {
       this.showUpload = false;
       this.$emit("clear");
     },
-    onSuccess() {
-
-    },
-    onError() {
-
-    }
+    onSuccess() {},
+    onError() {},
   },
 };
 </script>
 
-<style  scope>
+<style scope>
 .hide .el-upload--picture-card {
   display: none !important;
 }
 
-
-.avatar-uploader>.el-upload {
+.avatar-uploader > .el-upload {
   width: 150px;
   height: 150px;
   line-height: 150px;
@@ -163,7 +184,7 @@ export default {
   background: #fff;
 }
 
-.avatar-uploader>.el-upload>i {
+.avatar-uploader > .el-upload > i {
   font-size: 28px;
   color: #ccc;
 }
@@ -172,13 +193,13 @@ export default {
   display: block;
 } */
 
-.avatar-uploader>.el-upload-list>.el-upload-list__item {
+.avatar-uploader > .el-upload-list > .el-upload-list__item {
   width: 150px;
   height: 150px;
   /* display: block; */
 }
 
-.avatar-uploader>.el-upload-list>.el-upload-list__item>img {
+.avatar-uploader > .el-upload-list > .el-upload-list__item > img {
   width: 150px;
   height: 150px;
   border-radius: 0px;

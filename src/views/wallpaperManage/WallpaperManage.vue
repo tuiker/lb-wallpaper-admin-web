@@ -2,26 +2,29 @@
   <div>
     <el-card shadow="never">
       <el-form :inline="true">
-        <el-form-item label="创建时间" style="margin-bottom: 0px">
-          <el-date-picker
-            v-model="timeRange"
-            type="datetimerange"
-            range-separator="至"
-            start-placeholder="开始时间"
-            end-placeholder="结束时间"
-            value-format="yyyy-MM-dd HH:mm:ss"
-          ></el-date-picker>
+        <el-form-item label="排序方式" style="margin-bottom: 0px">
+          <el-select
+            v-model="queryParams.sortType"
+            placeholder="请选择"
+            @change="getTableData"
+          >
+            <el-option :key="1" label="按创建时间倒序" :value="1"> </el-option>
+            <el-option :key="2" label="按下载量倒序" :value="2"> </el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="分类名称" style="margin-bottom: 0px">
+        <el-form-item label="壁纸名称" style="margin-bottom: 0px">
           <el-input
             v-model="queryParams.name"
-            placeholder="输入分类名称进行查询"
+            placeholder="输入壁纸名称进行查询"
           ></el-input>
         </el-form-item>
         <el-form-item style="margin-bottom: 0px">
           <el-button @click="onSerach">查询</el-button>
           <el-button @click="onRefresh">刷新</el-button>
-          <el-button type="primary" v-permission="'addCategory'" @click="addRow"
+          <el-button
+            type="primary"
+            v-permission="'addWallpaper'"
+            @click="addRow"
             >添加</el-button
           >
         </el-form-item>
@@ -30,17 +33,25 @@
     <br />
     <el-table :data="tableData" row-key="id" v-loading="tableLoading" border>
       <el-table-column
-        label="编号"
-        prop="id"
-        min-width="120"
-        align="center"
-      ></el-table-column>
-      <el-table-column
-        label="分类名称"
+        label="壁纸名称"
         prop="name"
         min-width="120"
         align="center"
       ></el-table-column>
+      <el-table-column
+        label="缩略图"
+        prop="imgUrlList"
+        min-width="120"
+        align="center"
+      >
+        <template slot-scope="scope">
+          <el-image
+            style="width: 100px; height: 100px"
+            :src="JSON.parse(scope.row.imgUrlList)[0]"
+            :preview-src-list="JSON.parse(scope.row.imgUrlList)"
+          ></el-image>
+        </template>
+      </el-table-column>
       <el-table-column
         label="详细信息"
         prop="details"
@@ -48,11 +59,21 @@
         align="center"
       ></el-table-column>
       <el-table-column
-        label="壁纸数"
-        prop="wallpaperNum"
+        label="分类"
+        prop="categoryName"
         min-width="120"
         align="center"
       ></el-table-column>
+      <el-table-column
+        label="壁纸数"
+        prop="imgUrlList"
+        min-width="120"
+        align="center"
+      >
+        <template slot-scope="scope">
+          <span>{{ getWallpaperNum(scope.row.imgUrlList) }}</span>
+        </template>
+      </el-table-column>
       <el-table-column
         label="下载量"
         prop="downloadNum"
@@ -74,14 +95,14 @@
         <template slot-scope="scope">
           <template>
             <el-button
-              v-permission="'updateCategory'"
+              v-permission="'updateWallpaper'"
               @click="editRow(scope.row)"
               type="text"
               size="small"
               >编辑</el-button
             >
             <el-button
-              v-permission="'deleteCategory'"
+              v-permission="'deleteWallpaper'"
               @click="deleteRow(scope.row.id)"
               type="text"
               size="small"
@@ -103,26 +124,23 @@
     >
     </el-pagination>
 
-    <add-or-edit-category
-      ref="addOrEditCategory"
-      @success="getTableData"
-    ></add-or-edit-category>
+    <add-or-edit-wallpaper ref="addOrEditWallpaper" @success="getTableData">
+    </add-or-edit-wallpaper>
   </div>
 </template>
 <script>
-import { GetCategoryPageList, DeleteById } from "@/api/category.js";
-import AddOrEditCategory from "./components/AddOrEditCategory.vue";
+import { GetWallpaperInfoPageList, DeleteById } from "@/api/wallpaper.js";
+import AddOrEditWallpaper from "./components/AddOrEditWallpaper.vue";
 
 export default {
-  components: { AddOrEditCategory },
+  components: { AddOrEditWallpaper },
   data() {
     return {
       tableData: [],
       tableLoading: false,
       timeRange: [],
       queryParams: {
-        startTime: "",
-        endTime: "",
+        sortType: 1,
         name: "",
         page: 1,
         total: 0,
@@ -138,16 +156,7 @@ export default {
     //获取分页列表数据
     getTableData() {
       this.tableLoading = true;
-
-      this.queryParams.startTime = "";
-      this.queryParams.endTime = "";
-      let timeRange = this.timeRange;
-      if (null != timeRange && timeRange.length === 2) {
-        this.queryParams.startTime = timeRange[0];
-        this.queryParams.endTime = timeRange[1];
-      }
-
-      GetCategoryPageList(this.queryParams)
+      GetWallpaperInfoPageList(this.queryParams)
         .then((res) => {
           this.tableData = res.data.list;
           this.queryParams.total = res.data.total;
@@ -165,8 +174,7 @@ export default {
     onRefresh() {
       this.timeRange = [];
       this.queryParams = {
-        startTime: "",
-        endTime: "",
+        sortType: 1,
         name: "",
         page: 1,
         total: 0,
@@ -176,15 +184,15 @@ export default {
     },
     //添加
     addRow() {
-      this.$refs.addOrEditCategory.open();
+      this.$refs.addOrEditWallpaper.open();
     },
     //编辑行
     editRow(row) {
-      this.$refs.addOrEditCategory.open(row);
+      this.$refs.addOrEditWallpaper.open(row);
     },
     //删除行
     deleteRow(id) {
-      this.$confirm("是否确认删除该分类？", "确认信息", {
+      this.$confirm("是否确认删除该壁纸？", "确认信息", {
         distinguishCancelAndClose: true,
       }).then(() => {
         DeleteById({ id: id }).then(() => {
@@ -192,6 +200,11 @@ export default {
           this.getTableData();
         });
       });
+    },
+    //获取壁纸数
+    getWallpaperNum(imgUrlListStr) {
+      let imgUrlList = JSON.parse(imgUrlListStr);
+      return imgUrlList.length;
     },
     handleSizeChange(val) {
       this.queryParams.pageSize = val;

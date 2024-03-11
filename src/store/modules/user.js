@@ -165,7 +165,10 @@ const convert = (permissionList) => {
 
     if (item.childrenList && item.childrenList.length > 0) {
       //有子菜单，进行递归
-      route.children = convert(item.childrenList);
+      let list = convert(item.childrenList);
+      if (list && list.length > 0) {
+        route.children = list;
+      }
     }
 
     routes.push(route);

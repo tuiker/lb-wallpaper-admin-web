@@ -13,6 +13,18 @@ export function GetCategoryPageList(params) {
 }
 
 /**
+ * 查询所有壁纸分类
+ * @returns
+ */
+export function ListAllCategory(params) {
+  return request({
+    url: "/pc/category/listAll",
+    method: "get",
+    params,
+  });
+}
+
+/**
  * 新增分类
  * @param {*} data
  * @returns
