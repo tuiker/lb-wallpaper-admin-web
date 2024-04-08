@@ -187,10 +187,14 @@ export default {
       this.$confirm("是否确认删除该分类？", "确认信息", {
         distinguishCancelAndClose: true,
       }).then(() => {
-        DeleteById({ id: id }).then(() => {
-          this.$message.success("删除成功");
-          this.getTableData();
-        });
+        DeleteById({ id: id })
+          .then(() => {
+            this.$message.success("删除成功");
+            this.getTableData();
+          })
+          .catch((res) => {
+            this.$message.error(res.msg);
+          });
       });
     },
     handleSizeChange(val) {
