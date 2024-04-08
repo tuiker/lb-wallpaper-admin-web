@@ -32,7 +32,7 @@
       class="clearBtn"
       >清空上传列表</el-button
     >
-    <el-dialog width="30%" :visible.sync="dialogVisible">
+    <el-dialog width="30%" :visible.sync="dialogVisible" :modal="false">
       <img width="100%" :src="imgUrl.url" alt />
     </el-dialog>
   </div>
