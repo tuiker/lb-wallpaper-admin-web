@@ -18,7 +18,7 @@
         <el-input
           v-model.trim="formData.name"
           maxlength="30"
-          placeholder="请输入分类名称"
+          placeholder="请输入壁纸名称"
         ></el-input>
       </el-form-item>
       <el-form-item label="壁纸素材:" prop="imgUrlList">
