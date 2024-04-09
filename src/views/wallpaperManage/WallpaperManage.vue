@@ -47,7 +47,7 @@
         <template slot-scope="scope">
           <el-image
             style="width: 100px; height: 100px"
-            :src="JSON.parse(scope.row.imgUrlList)[0]"
+            :src="scope.row.coverImage"
             :preview-src-list="JSON.parse(scope.row.imgUrlList)"
           ></el-image>
         </template>
