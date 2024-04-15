@@ -64,10 +64,12 @@
       >
         <template slot-scope="scope">
           <el-image
+            v-if="scope.row.feedbackImgList"
             style="width: 100px; height: 100px"
             :src="JSON.parse(scope.row.feedbackImgList)[0]"
             :preview-src-list="JSON.parse(scope.row.feedbackImgList)"
           ></el-image>
+          <span v-else>无</span>
         </template>
       </el-table-column>
       <el-table-column
