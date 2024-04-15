@@ -64,7 +64,10 @@
       >
         <template slot-scope="scope">
           <el-image
-            v-if="scope.row.feedbackImgList"
+            v-if="
+              scope.row.feedbackImgList &&
+              JSON.parse(scope.row.feedbackImgList)[0]
+            "
             style="width: 100px; height: 100px"
             :src="JSON.parse(scope.row.feedbackImgList)[0]"
             :preview-src-list="JSON.parse(scope.row.feedbackImgList)"
