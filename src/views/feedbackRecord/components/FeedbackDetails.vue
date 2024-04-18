@@ -42,13 +42,16 @@
         ></el-input>
       </el-form-item>
       <el-form-item label="反馈图片:" prop="feedbackImgList">
-        <el-image
-          style="width: 100px; height: 100px; margin-right: 10px"
-          v-for="(item, index) in feedbackImgList"
-          :key="index"
-          :src="item"
-          :preview-src-list="feedbackImgList"
-        ></el-image>
+        <template v-if="feedbackImgList.length > 0">
+          <el-image
+            style="width: 100px; height: 100px; margin-right: 10px"
+            v-for="(item, index) in feedbackImgList"
+            :key="index"
+            :src="item"
+            :preview-src-list="feedbackImgList"
+          ></el-image>
+        </template>
+        <span v-else>无</span>
       </el-form-item>
       <el-form-item label="反馈时间:" prop="createTime">
         <el-input
@@ -79,7 +82,10 @@ export default {
       this.titel = "反馈详情";
       if (data && data.id) {
         this.formData = { ...data };
-        this.feedbackImgList = JSON.parse(data.feedbackImgList);
+        this.feedbackImgList =
+          data.feedbackImgList && JSON.parse(data.feedbackImgList)[0]
+            ? JSON.parse(data.feedbackImgList)
+            : [];
       }
       this.visible = true;
     },
